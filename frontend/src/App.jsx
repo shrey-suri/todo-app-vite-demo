@@ -1,33 +1,59 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 
 function App() {
   const [count, setCount] = useState(0)
+  const [totalCount, setTotalCount] = useState(0)
+  const [taskValue, setTaskValue] = useState("")
+  const [taskList, setTaskList] = useState([])
+
+  const submitTask = () => {
+    if (taskValue !== '') {
+      setTaskList([...taskList, taskValue]);
+      setCount(count + 1);
+      setTotalCount(totalCount + 1);
+      setTaskValue('');
+    }
+  }
+
+  const handleTaskClick = (event) => {
+    const style = event.target.style;
+
+    if(style.textDecoration){
+      style.removeProperty('text-decoration');
+      setCount(count + 1);
+    }
+    else{
+      style.setProperty('text-decoration', 'line-through');
+      setCount(count - 1);
+    }
+  }
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <p>Active Tasks: {count} , Total Count: {totalCount}</p>
+      <input type='text' value={taskValue} onChange={(event) => setTaskValue(event.target.value)}></input>
+      {' '}
+      <button type='submit' onClick={submitTask}>Submit</button>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Task Name</th>
+          </tr>
+
+        </thead>
+        <tbody>
+          {
+            taskList.map((task, idx) => (
+              <tr key={idx} onClick={handleTaskClick}>
+                <td>{task}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+
+      </table>
     </>
   )
 }
